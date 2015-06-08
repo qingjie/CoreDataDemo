@@ -26,7 +26,7 @@ class ViewController: UIViewController, UITableViewDelegate , UITableViewDataSou
     
     func listFetchRequest() -> NSFetchRequest{
         let fetchRequest = NSFetchRequest(entityName: "List")
-        let sortDescriptor = NSSortDescriptor(key:"item",ascending:true)
+        let sortDescriptor = NSSortDescriptor(key:"name",ascending:true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         return fetchRequest
     }
