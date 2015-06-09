@@ -10,14 +10,36 @@ import UIKit
 import CoreData
 
 
-class ViewController: UIViewController, UITableViewDelegate , UITableViewDataSource,NSFetchedResultsControllerDelegate {
+class ViewController: UITableViewController, NSFetchedResultsControllerDelegate {
 
     
-    @IBOutlet weak var tableView: UITableView!
     
     let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext!
     
     var frc = NSFetchedResultsController()
+    
+    var isAscending = true
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        frc.delegate = self
+        
+        frc = getFetchedResultsController()
+        
+        frc.performFetch(nil)
+        
+        
+    }
+    
+    
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
     
     func getFetchedResultsController() -> NSFetchedResultsController{
         frc = NSFetchedResultsController(fetchRequest: listFetchRequest(), managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
@@ -26,41 +48,29 @@ class ViewController: UIViewController, UITableViewDelegate , UITableViewDataSou
     
     func listFetchRequest() -> NSFetchRequest{
         let fetchRequest = NSFetchRequest(entityName: "List")
-        let sortDescriptor = NSSortDescriptor(key:"item",ascending:true)
+        let sortDescriptor = NSSortDescriptor(key:"name",ascending:true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         return fetchRequest
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        frc.delegate = self
-        
-        frc = getFetchedResultsController()
-       
-        frc.performFetch(nil)
-    }
+  
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
         tableView.reloadData()
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         let numberOfSections = frc.sections?.count
         return numberOfSections!
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let numberOfRowsInSection = frc.sections?[section].numberOfObjects
         return numberOfRowsInSection!
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! UITableViewCell
         let list = frc.objectAtIndexPath(indexPath) as! List
         
@@ -72,13 +82,14 @@ class ViewController: UIViewController, UITableViewDelegate , UITableViewDataSou
         return cell
     }
     
-     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         let managedObject = frc.objectAtIndexPath(indexPath) as! NSManagedObject
         context.deleteObject(managedObject)
         context.save(nil)
         
     }
+   
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "edit" {
@@ -88,18 +99,20 @@ class ViewController: UIViewController, UITableViewDelegate , UITableViewDataSou
             let nItem = frc.objectAtIndexPath(indexPath!) as! List
             itemController.nItem = nItem
             
-            
-            
         }else if segue.identifier == "add" {
-        
+            
         }
     }
+    
+   
     
     //unwind
     @IBAction func close(segue:UIStoryboardSegue){
         print("close")
-//        tableView.reaload()
+        //refreshUI()
     }
-
+    
+ 
+    
 }
 

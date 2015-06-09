@@ -15,15 +15,9 @@ class DetailViewController: UIViewController {
     let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var nItem : List? = nil
     
-    
-    
-    
-    
     @IBOutlet weak var name: UITextField!
     @IBOutlet weak var note: UITextField!
     @IBOutlet weak var quantity: UITextField!
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,9 +25,6 @@ class DetailViewController: UIViewController {
             name.text = nItem?.name
             note.text = nItem?.note
             quantity.text = nItem?.qty
-            
-            
-            
         }
     }
     
@@ -44,14 +35,11 @@ class DetailViewController: UIViewController {
     
     
     @IBAction func save(sender: AnyObject) {
-        
         if nItem != nil{
             editItem()
         }else{
             newItem()
         }
-        
-        
     }
 
 
@@ -67,8 +55,8 @@ class DetailViewController: UIViewController {
         context?.save(nil)
     }
     
+    
     func editItem(){
-        
         nItem!.name = name.text
         nItem!.note = note.text
         nItem!.qty = quantity.text
